@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
+
 class UserController extends Controller
 {
-    public function getUserData(): array
+    /**
+     * @return UserResource
+     */
+    public function getUserData(): UserResource
     {
-        return [
-            'id' => 1,
-            'username' => 'Test User',
-            'level' => 1,
-            'level_points' => '40/100',
-            'cards' => config('game.cards'),
-            'new_card_allowed' => true,
-        ];
+        $user = auth()->user();
+        $user->load(['level', 'cards']);
+
+        return new UserResource($user);
     }
 }

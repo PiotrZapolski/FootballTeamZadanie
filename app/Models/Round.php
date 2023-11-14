@@ -2,10 +2,25 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $duel_id
+ * @property int $number
+ * @property int $user_card_id
+ * @property int $opponent_card_id
+ * @property int $user_points
+ * @property int $opponent_points
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Duel $duel
+ * @property-read Card $userCard
+ * @property-read Card $opponentCard
+ */
 class Round extends Model
 {
     use HasFactory;

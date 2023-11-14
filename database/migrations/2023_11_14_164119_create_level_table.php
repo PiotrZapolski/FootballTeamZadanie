@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('levels', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('level')->unique();
+            $table->unsignedInteger('number')->unique();
             $table->unsignedInteger('cards_limit');
-            $table->unsignedInteger('level_up_threshold');
+            $table->unsignedInteger('level_up_threshold')->nullable();
             $table->timestamps();
         });
     }
