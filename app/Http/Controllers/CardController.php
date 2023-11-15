@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\JsonResponse;
+use App\Http\Resources\CardResource;
+use App\Services\GameLogicService;
 
 class CardController extends Controller
 {
-    public function getCards(): JsonResponse
+    public function __construct(private readonly GameLogicService $gameLogicService)
     {
-        return response()->json();
+    }
+
+    /**
+     * @return CardResource
+     * @throws \Exception
+     */
+    public function getCard(): CardResource
+    {
+        $card = $this->gameLogicService->getNewCard();
+
+        return new CardResource($card);
     }
 }

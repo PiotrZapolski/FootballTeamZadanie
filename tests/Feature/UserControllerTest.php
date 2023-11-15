@@ -20,7 +20,7 @@ class UserControllerTest extends TestCase
         $this->seed(CardsSeeder::class);
     }
 
-    public function testGetUserDataWithNewCardAllowed()
+    public function testGetUserDataWithNewCardAllowedSuccess()
     {
         $user = User::factory()->create();
 
@@ -40,7 +40,7 @@ class UserControllerTest extends TestCase
         ]);
     }
 
-    public function testGetUserDataWithNewCardNotAllowed()
+    public function testGetUserDataWithNewCardNotAllowedSuccess()
     {
         $user = User::factory()->create();
         $user->cards()->attach(range(1, 5));

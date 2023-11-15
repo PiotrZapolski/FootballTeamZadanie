@@ -29,7 +29,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/', [DuelController::class, 'getDuelsHistory']);
     });
 
-    Route::post('cards', [CardController::class, 'getCards']);
+    Route::post('cards', [CardController::class, 'getCard']);
 
     Route::get('user-data', [UserController::class, 'getUserData']);
 });
