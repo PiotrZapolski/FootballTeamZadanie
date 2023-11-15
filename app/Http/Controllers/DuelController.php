@@ -3,14 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DuelResource;
+use App\Services\GameLogicService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class DuelController extends Controller
 {
+    public function __construct(private readonly GameLogicService $gameLogicService)
+    {
+    }
+
+    /**
+     * @return JsonResponse
+     */
     public function startDuel(): JsonResponse
     {
-        return response()->json();
+        $this->gameLogicService->startDuel();
+
+        return response()->json(['info' => 'OK']);
     }
 
     public function getCurrentDuelData(): array

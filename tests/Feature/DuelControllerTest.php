@@ -84,4 +84,29 @@ class DuelControllerTest extends TestCase
 
         $this->assertEquals(6, Duel::count());
     }
+
+    public function testUserStartsDuelSuccess()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson('/api/duels');
+
+        $response->assertOk();
+        $response->assertJson(['info' => 'OK']);
+
+        $this->assertDatabaseHas('duels', [
+            'user_id' => $user->id,
+        ]);
+
+        /** @var Duel $duel */
+        $duel = Duel::latest()->first();
+        $this->assertEquals($user->id, $duel->user_id);
+        $this->assertEquals(0, $duel->user_points);
+        $this->assertEquals(0, $duel->opponent_points);
+        $this->assertEquals(
+            DuelStatusEnum::Active->value,
+            $duel->status
+        );
+        $this->assertNotNull($duel->fake_opponent_id);
+    }
 }
