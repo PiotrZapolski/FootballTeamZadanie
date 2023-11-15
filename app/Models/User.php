@@ -69,7 +69,7 @@ class User extends Authenticatable
      */
     public function duels(): HasMany
     {
-        return $this->hasMany(Duel::class, 'player_id');
+        return $this->hasMany(Duel::class, 'user_id');
     }
 
     /**
@@ -84,7 +84,7 @@ class User extends Authenticatable
         $currentPoints = $this->level_points;
         $neededPoints = $this->level->level_up_threshold;
 
-        return "$currentPoints/$neededPoints";
+        return $currentPoints . "/" . $neededPoints;
     }
 
     /**

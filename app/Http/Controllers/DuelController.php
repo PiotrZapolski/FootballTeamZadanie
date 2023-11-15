@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DuelResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class DuelController extends Controller
 {
@@ -27,33 +29,18 @@ class DuelController extends Controller
         return response()->json();
     }
 
-    public function getDuelsHistory(): array
+    /**
+     * @return JsonResource
+     */
+    public function getDuelsHistory(): JsonResource
     {
-        return [
-            [
-                "id" => 1,
-                "player_name" => "Jan Kowalski",
-                "opponent_name" => "Piotr Nowak",
-                "won" => 0
-            ],
-            [
-                "id" => 2,
-                "player_name" => "Jan Kowalski",
-                "opponent_name" => "Tomasz Kaczyński",
-                "won" => 1
-            ],
-            [
-                "id" => 3,
-                "player_name" => "Jan Kowalski",
-                "opponent_name" => "Agnieszka Tomczak",
-                "won" => 1
-            ],
-            [
-                "id" => 4,
-                "player_name" => "Jan Kowalski",
-                "opponent_name" => "Michał Bladowski",
-                "won" => 1
-            ],
-        ];
+        $user = auth()->user();
+
+        $duels = $user->duels()
+            ->finished()
+            ->with(['rounds', 'fakeOpponent'])
+            ->get();
+
+        return DuelResource::collection($duels);
     }
 }

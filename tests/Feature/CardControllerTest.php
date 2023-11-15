@@ -34,12 +34,10 @@ class CardControllerTest extends TestCase
 
 
         $response->assertJsonStructure([
-            'data' => [
-                'id',
-                'name',
-                'power',
-                'image',
-            ],
+            'id',
+            'name',
+            'power',
+            'image',
         ]);
 
         $user->refresh();

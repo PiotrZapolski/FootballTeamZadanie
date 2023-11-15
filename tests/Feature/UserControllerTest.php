@@ -29,14 +29,12 @@ class UserControllerTest extends TestCase
         $response->assertOk();
 
         $response->assertJson([
-            'data' => [
-                'id' => $user->id,
-                'username' => $user->username,
-                'level' => $user->level->number,
-                'level_points' => $user->getPointsAttribute(),
-                'cards' => [],
-                'new_card_allowed' => true,
-            ],
+            'id' => $user->id,
+            'username' => $user->username,
+            'level' => $user->level->number,
+            'level_points' => $user->getPointsAttribute(),
+            'cards' => [],
+            'new_card_allowed' => true,
         ]);
     }
 
@@ -50,20 +48,18 @@ class UserControllerTest extends TestCase
         $response->assertOk();
 
         $response->assertJson([
-            'data' => [
-                'id' => $user->id,
-                'username' => 'Test User',
-                'level' => 1,
-                'level_points' => '40/100',
-                'cards' => [
-                    ['id' => 1, 'name' => 'Sergio Donputamadre', 'power' => 101, 'image' => 'card-1.jpg'],
-                    ['id' => 2, 'name' => 'Lewan RS', 'power' => 69, 'image' => 'card-2.jpg'],
-                    ['id' => 3, 'name' => 'Enpi12', 'power' => 85, 'image' => 'card-3.jpg'],
-                    ['id' => 4, 'name' => 'Drivery', 'power' => 61, 'image' => 'card-4.jpg'],
-                    ['id' => 5, 'name' => 'Maximus', 'power' => 18, 'image' => 'card-5.jpg'],
-                ],
-                'new_card_allowed' => false,
+            'id' => $user->id,
+            'username' => 'Test User',
+            'level' => 1,
+            'level_points' => '40/100',
+            'cards' => [
+                ['id' => 1, 'name' => 'Sergio Donputamadre', 'power' => 101, 'image' => 'card-1.jpg'],
+                ['id' => 2, 'name' => 'Lewan RS', 'power' => 69, 'image' => 'card-2.jpg'],
+                ['id' => 3, 'name' => 'Enpi12', 'power' => 85, 'image' => 'card-3.jpg'],
+                ['id' => 4, 'name' => 'Drivery', 'power' => 61, 'image' => 'card-4.jpg'],
+                ['id' => 5, 'name' => 'Maximus', 'power' => 18, 'image' => 'card-5.jpg'],
             ],
+            'new_card_allowed' => false,
         ]);
     }
 }
