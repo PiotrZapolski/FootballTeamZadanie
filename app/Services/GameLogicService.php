@@ -29,7 +29,7 @@ class GameLogicService
      */
     public function getNewCard(): Card
     {
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
         $user->load(['level', 'cards']);
 
         if ($user->isNewCardAllowed() === false) {
@@ -51,7 +51,7 @@ class GameLogicService
      */
     public function startDuel(): void
     {
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
 
         if ($user->hasActiveDuel() === false) {
             $fakeOpponent = $this->createFakeOpponent($user->level);

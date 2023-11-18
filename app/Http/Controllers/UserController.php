@@ -11,7 +11,7 @@ class UserController extends Controller
      */
     public function getUserData(): UserResource
     {
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
         $user->load(['level', 'cards']);
 
         return new UserResource($user);

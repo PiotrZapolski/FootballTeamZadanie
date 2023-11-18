@@ -137,7 +137,7 @@ class User extends Authenticatable
 
         foreach ($usedCardIds as $usedCardId) {
             $key = $allCards->search(function ($card) use ($usedCardId) {
-                return $card->pivot->id == $usedCardId;
+                return $card->id == $usedCardId;
             });
 
             if ($key !== false) {

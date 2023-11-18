@@ -33,7 +33,7 @@ class DuelController extends Controller
      */
     public function nextRound(): JsonResource
     {
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
         $currentDuel = $user->getLastDuel();
 
         if ($currentDuel === null) {
@@ -55,14 +55,14 @@ class DuelController extends Controller
      */
     public function selectCard(SelectCardRequest $request): JsonResponse
     {
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
         $card = Card::findByPivotId($request->validated('id'));
         $duel = $user->getLastDuel();
 
         if ($duel === null) {
             throw new UnprocessableEntityHttpException('You dont have any duels');
         }
-        if ($user->getAvailableCards()->contains($card) === false) {
+        if ($card === null || $user->getAvailableCards()->contains($card) === false) {
             throw new AccessDeniedHttpException('You cant use this card.');
         }
 
@@ -76,7 +76,7 @@ class DuelController extends Controller
      */
     public function getDuelsHistory(): JsonResource
     {
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
 
         $duels = $user->duels()
             ->finished()

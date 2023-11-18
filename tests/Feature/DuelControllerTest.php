@@ -205,7 +205,7 @@ class DuelControllerTest extends TestCase
         $card = $user->cards->first();
         $round = Round::factory()->create([
             'duel_id' => $duel->id,
-            'user_card_id' => $card->pivot->id,
+            'user_card_id' => $card->id,
         ]);
 
         $this->actingAs($user);

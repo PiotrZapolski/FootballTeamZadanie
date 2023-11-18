@@ -23,7 +23,11 @@ class Card extends Model
 
     protected $fillable = ['id', 'name', 'power', 'image'];
 
-    public static function findByPivotId($pivotId)
+    /**
+     * @param $pivotId
+     * @return Card|null
+     */
+    public static function findByPivotId($pivotId): ?Card
     {
         return self::join('userable_cards', 'cards.id', '=', 'userable_cards.card_id')
             ->where('userable_cards.id', $pivotId)

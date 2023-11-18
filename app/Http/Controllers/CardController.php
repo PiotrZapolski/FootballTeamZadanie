@@ -13,7 +13,6 @@ class CardController extends Controller
 
     /**
      * @return CardResource
-     * @throws \Exception
      */
     public function getCard(): CardResource
     {
