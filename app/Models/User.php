@@ -62,6 +62,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'point' => 'int',
     ];
 
     /**
@@ -102,4 +103,49 @@ class User extends Authenticatable
     {
         return $this->level->cards_limit > $this->getCardsCount();
     }
+
+    /**
+     * @return bool
+     */
+    public function hasActiveDuel(): bool
+    {
+        return $this->duels()
+            ->active()
+            ->exists();
+    }
+
+    /**
+     * @return Duel|null
+     */
+    public function getLastDuel(): ?Duel
+    {
+        return $this->duels()
+            ->active()
+            ->latest()
+            ->with(['rounds', 'fakeOpponent'])
+            ->first();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAvailableCards(): Collection
+    {
+        $activeDuel = $this->getLastDuel();
+        $usedCardIds = $activeDuel->rounds->pluck('user_card_id');
+        $allCards = $this->cards;
+
+        foreach ($usedCardIds as $usedCardId) {
+            $key = $allCards->search(function ($card) use ($usedCardId) {
+                return $card->pivot->id == $usedCardId;
+            });
+
+            if ($key !== false) {
+                $allCards->forget($key);
+            }
+        }
+
+        return $allCards;
+    }
+
 }

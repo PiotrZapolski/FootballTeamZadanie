@@ -22,7 +22,7 @@ class DuelResource extends JsonResource
             'id' => $this->id,
             'player_name' => $this->user->username,
             'opponent_name' => $this->fakeOpponent->username,
-            'won' => $this->isWon(),
+            'won' => $this->isWon() ? 1 : 0,
         ];
     }
 }

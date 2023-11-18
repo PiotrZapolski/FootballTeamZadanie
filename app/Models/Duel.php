@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Round|null $lastRound
+ * @property Round|null $currentRound
  * @property-read User $user
  * @property-read FakeOpponent $fakeOpponent
  * @property-read Collection $rounds
@@ -59,6 +61,27 @@ class Duel extends Model
     }
 
     /**
+     * @return Round|null
+     */
+    public function getLastRoundAttribute(): ?Round
+    {
+        return $this->rounds
+            ->sortByDesc('number')
+            ->first();
+    }
+
+    /**
+     * @return Round|null
+     */
+    public function getCurrentRoundAttribute(): ?Round
+    {
+        return $this->rounds
+            ->sortByDesc('number')
+            ->whereNull('opponent_card_id')
+            ->first();
+    }
+
+    /**
     * @param Builder $query
     * @return Builder
     */
@@ -85,5 +108,13 @@ class Duel extends Model
         $opponentPoints = $this->rounds()->sum('opponent_points');
 
         return $userPoints > $opponentPoints;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFinished(): bool
+    {
+        return $this->status === DuelStatusEnum::Finished->value;
     }
 }

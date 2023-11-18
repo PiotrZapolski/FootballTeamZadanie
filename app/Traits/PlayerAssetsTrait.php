@@ -14,7 +14,13 @@ trait PlayerAssetsTrait
      */
     public function cards(): MorphToMany
     {
-        return $this->morphToMany(Card::class, 'userable', 'userable_cards');
+        return $this->morphToMany(
+            Card::class,
+            'userable',
+            'userable_cards'
+        )
+        ->withPivot('id')
+        ->withTimestamps();
     }
 
     /**

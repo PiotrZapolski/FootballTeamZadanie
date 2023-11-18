@@ -24,7 +24,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::group(['prefix' => 'duels'], function () {
         Route::post('/', [DuelController::class, 'startDuel']);
-        Route::get('/active', [DuelController::class, 'getCurrentDuelData']);
+        Route::get('/active', [DuelController::class, 'nextRound']);
         Route::post('/action', [DuelController::class, 'selectCard']);
         Route::get('/', [DuelController::class, 'getDuelsHistory']);
     });

@@ -53,11 +53,11 @@ class UserControllerTest extends TestCase
             'level' => 1,
             'level_points' => '40/100',
             'cards' => [
-                ['id' => 1, 'name' => 'Sergio Donputamadre', 'power' => 101, 'image' => 'card-1.jpg'],
-                ['id' => 2, 'name' => 'Lewan RS', 'power' => 69, 'image' => 'card-2.jpg'],
-                ['id' => 3, 'name' => 'Enpi12', 'power' => 85, 'image' => 'card-3.jpg'],
-                ['id' => 4, 'name' => 'Drivery', 'power' => 61, 'image' => 'card-4.jpg'],
-                ['id' => 5, 'name' => 'Maximus', 'power' => 18, 'image' => 'card-5.jpg'],
+                ['name' => 'Sergio Donputamadre', 'power' => 101, 'image' => 'card-1.jpg'],
+                ['name' => 'Lewan RS', 'power' => 69, 'image' => 'card-2.jpg'],
+                ['name' => 'Enpi12', 'power' => 85, 'image' => 'card-3.jpg'],
+                ['name' => 'Drivery', 'power' => 61, 'image' => 'card-4.jpg'],
+                ['name' => 'Maximus', 'power' => 18, 'image' => 'card-5.jpg'],
             ],
             'new_card_allowed' => false,
         ]);

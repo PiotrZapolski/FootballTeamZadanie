@@ -20,7 +20,7 @@ class CardResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->pivot->id,
             'name' => $this->name,
             'power' => $this->power,
             'image' => $this->image,

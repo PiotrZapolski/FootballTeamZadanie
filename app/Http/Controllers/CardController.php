@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CardResource;
-use App\Services\GameLogicService;
+use App\Services\CardsService;
 
 class CardController extends Controller
 {
-    public function __construct(private readonly GameLogicService $gameLogicService)
+    public function __construct(private readonly CardsService $cardsService)
     {
     }
 
@@ -17,7 +17,7 @@ class CardController extends Controller
      */
     public function getCard(): CardResource
     {
-        $card = $this->gameLogicService->getNewCard();
+        $card = $this->cardsService->getNewCard();
 
         return new CardResource($card);
     }

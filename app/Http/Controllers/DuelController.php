@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SelectCardRequest;
+use App\Http\Resources\ActiveDuelResource;
 use App\Http\Resources\DuelResource;
+use App\Models\Card;
 use App\Services\GameLogicService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class DuelController extends Controller
 {
@@ -23,20 +28,47 @@ class DuelController extends Controller
         return response()->json(['info' => 'OK']);
     }
 
-    public function getCurrentDuelData(): array
+    /**
+     * @return JsonResource
+     */
+    public function nextRound(): JsonResource
     {
-        return [
-            'round' => 4,
-            'your_points' => 260,
-            'opponent_points' => 100,
-            'status' => 'active',
-            'cards' => config('game.cards'),
-        ];
+        $user = auth()->user();
+        $currentDuel = $user->getLastDuel();
+
+        if ($currentDuel === null) {
+            throw new UnprocessableEntityHttpException('You dont have active duel');
+        }
+
+        $this->gameLogicService->finishRound($currentDuel);
+
+        if ($currentDuel->isFinished() === false) {
+            $this->gameLogicService->newRound($currentDuel);
+        }
+
+        return new ActiveDuelResource($currentDuel);
     }
 
-    public function selectCard(): JsonResponse
+    /**
+     * @param SelectCardRequest $request
+     * @return JsonResponse
+     */
+    public function selectCard(SelectCardRequest $request): JsonResponse
     {
-        return response()->json();
+        $user = auth()->user();
+        $card = Card::findByPivotId($request->validated('id'));
+        $duel = $user->getLastDuel();
+
+        if ($duel === null) {
+            throw new UnprocessableEntityHttpException('You dont have any duels');
+        }
+        if ($user->getAvailableCards()->contains($card) === false) {
+            throw new AccessDeniedHttpException('You cant use this card.');
+        }
+
+        $this->gameLogicService->selectCard($duel, $card);
+
+        return response()->json(['info' => 'OK']);
     }
 
     /**
@@ -48,7 +80,8 @@ class DuelController extends Controller
 
         $duels = $user->duels()
             ->finished()
-            ->with(['rounds', 'fakeOpponent'])
+            ->with(['rounds', 'fakeOpponent', 'user'])
+            ->latest()
             ->get();
 
         return DuelResource::collection($duels);
