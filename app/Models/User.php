@@ -3,14 +3,32 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\PlayerAssetsTrait;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property int $id
+ * @property string $username
+ * @property int $level_id
+ * @property Level $level
+ * @property int $level_points
+ * @property Collection $cards
+ * @property bool $new_card_allowed
+ * @property string|null $email_verified_at
+ * @property string $password
+ * @property string $points
+ * @property string|null $remember_token
+ * @property Collection $duels
+ * @property int $cards_count
+ */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, PlayerAssetsTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -18,9 +36,12 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
+        'id',
+        'username',
+        'level_id',
+        'level_points',
+        'cards',
+        'new_card_allowed',
     ];
 
     /**
@@ -41,5 +62,90 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'point' => 'int',
     ];
+
+    /**
+     * @return HasMany
+     */
+    public function duels(): HasMany
+    {
+        return $this->hasMany(Duel::class, 'user_id');
+    }
+
+    /**
+     * @return string
+     */
+    public function getPointsAttribute(): string
+    {
+        if ($this->level->level_up_threshold === null) {
+            return $this->level_points;
+        }
+
+        $currentPoints = $this->level_points;
+        $neededPoints = $this->level->level_up_threshold;
+
+        return $currentPoints . "/" . $neededPoints;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCardsCount(): int
+    {
+        return $this->cards()->count();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNewCardAllowed(): bool
+    {
+        return $this->level->cards_limit > $this->getCardsCount();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasActiveDuel(): bool
+    {
+        return $this->duels()
+            ->active()
+            ->exists();
+    }
+
+    /**
+     * @return Duel|null
+     */
+    public function getLastDuel(): ?Duel
+    {
+        return $this->duels()
+            ->active()
+            ->latest()
+            ->with(['rounds', 'fakeOpponent'])
+            ->first();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAvailableCards(): Collection
+    {
+        $activeDuel = $this->getLastDuel();
+        $usedCardIds = $activeDuel->rounds->pluck('user_card_id');
+        $allCards = $this->cards;
+
+        foreach ($usedCardIds as $usedCardId) {
+            $key = $allCards->search(function ($card) use ($usedCardId) {
+                return $card->id == $usedCardId;
+            });
+
+            if ($key !== false) {
+                $allCards->forget($key);
+            }
+        }
+
+        return $allCards;
+    }
+
 }

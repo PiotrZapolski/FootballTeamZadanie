@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Level;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -12,6 +14,12 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create();
+        User::create(['id' => 1,
+            'username' => 'Test User',
+            'email' => 'test@email.com',
+            'password' => Hash::make('password'),
+            'level_id' => Level::first()->id,
+            'level_points' => 40,
+        ]);
     }
 }
